@@ -6,6 +6,9 @@ from pathlib import Path
 import numpy as np
 from rich.console import Console
 from rich.table import Table
+from rich.progress import Progress, TextColumn, \
+    BarColumn, MofNCompleteColumn, SpinnerColumn,\
+    TimeRemainingColumn
 
 
 from ponca_kdtree import KdTree, KnnGraph
@@ -220,14 +223,24 @@ def main():
     parser.add_argument("--radius", default=0.5, type=float )
     parser.add_argument("--knn", default=8, type=int )
     parser.add_argument("--graph-k",default=8, type=int )
-    parser.add_argument("--repeats", default=10, type=int )
+    parser.add_argument("--repeats", default=25, type=int )
     parser.add_argument("--seed", default=123, type=int )
     args = parser.parse_args()
 
     results = {}
-    for i in range(args.repeats):
-        benchResult = run_benchmark(args.num_points, args.radius, args.knn, args.graph_k)
-        results = add_result(results, benchResult)
+
+    progress = Progress(
+        SpinnerColumn(),
+        TextColumn("Benchmark"),
+        BarColumn(),
+        MofNCompleteColumn(),
+        TimeRemainingColumn(),
+    )
+
+    with progress:
+        for i in progress.track(range(args.repeats)):
+            benchResult = run_benchmark(args.num_points, args.radius, args.knn, args.graph_k)
+            results = add_result(results, benchResult)
     log_results(results)
     
 if __name__ == "__main__":
