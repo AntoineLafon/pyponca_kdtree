@@ -1,0 +1,3 @@
+[submodule "src/ponca"]
+	path = src/ponca
+	url = https://github.com/poncateam/ponca.git
