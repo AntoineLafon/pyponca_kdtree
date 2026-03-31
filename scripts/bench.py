@@ -191,7 +191,7 @@ def fmt(val, best):
     return text
 
 def log_results(results_dict):
-    console = Console()
+    console = Console(record=True, width=100)
 
     table = Table(title="Benchmark Results", header_style="bold magenta", border_style="dim")
     table.add_column("Lib", style="bold", no_wrap=True)
@@ -216,6 +216,8 @@ def log_results(results_dict):
         )
     console.print(table)
     console.print()
+
+    console.save_svg("bench.svg")
 
 def main():
     parser = argparse.ArgumentParser()
